@@ -7,8 +7,8 @@
 #%% Script description
 #
 # This is the simulation itself.
-#|
-#%% Packages|
+#
+#%% Packages
 #
 import numpy as np
 import matplotlib.pylab as plt
