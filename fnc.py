@@ -18,7 +18,7 @@ def layer(Hz: float)->float:
     # currently flying through (according to Table 4 of the Standard)
     # 
     # === INPUTS ===
-    # Hz [m] - Geopotential height
+    # Hz [m'] - Geopotential height
     # === OUTPUTS === 
     # b [adim] - Subscript of the layer
     #
@@ -106,4 +106,69 @@ def p(Tmb,Lmb,Hz,Hb,Pb):
     elif Lmb==0:
         P = Pb*np.exp((-go*Mo*(Hz-Hb))/(R*Tmb*1000))
     return P
-        
+
+def rho(P,Tm):
+    # The aim of this function is to estimate the density value according to
+    # equation (42) of the US Standard Atmosphere 1976.
+    # This function provides the density for the range 0-86km.
+    # === INPUTS ===
+    # Tm [K]          Temperature at given geopotential height Hz
+    # P [N/m^2]       Pressure at given geopotential height Hz
+    # === OUTPUTS === 
+    # rho [kg/m^3]     Density at given geopotential height Hz
+    # === CONSTANTS ===
+    R = 8.31432 * 10**-3        # [Nm / (kmol.K)] - Gas constant (Page 2)
+    Mo = 28.9644                # [kg/kmol] - Mean Molecular Weight - (Page 9)
+    rho = (P*Mo)/(R*Tm)         # [kg/m^3]  - Density (Eq 42)
+    return rho
+    
+def Vs(Tm):
+    # The aim of this function is to estimate the speed of sound value 
+    # according to equation (50) of the US Standard Atmosphere 1976.
+    # This function provides the speed of sound for the range 0-86km.
+    # Applies onl when the sound wave is a small perturbation on the 
+    # ambient condition.
+    # === INPUTS ===
+    # Tm [K]          Temperature at given geopotential height Hz
+    # === OUTPUTS === 
+    # Vs [m/s]     Speed of sound at given temperature Tm(Hz)
+    # === CONSTANTS ===
+    R = 8.31432 * 10**-3        # [Nm / (kmol.K)] - Gas constant (Page 2)
+    Mo = 28.9644                # [kg/kmol] - Mean Molecular Weight - (Page 9)
+    gamma = 1.4                 # [adim] - Ratio of Cp/Cv
+    Vs = ((gamma*R*Tm)/Mo)**0.5 # [m/s] - Local speed of sound
+    return Vs
+
+def visc(Tm,rho):
+    # The aim of this function is to estimate the dynamic and kinematic 
+    # viscosity according to equations (51 and 52) of the US 
+    # Standard Atmosphere 1976.
+    # This function provides the speed of sound for the range 0-86km.
+    # According to p10 of this standard, Tm = T for the 0-80km range.
+    # From 80 to 86 the difference is very small. 
+    # === INPUTS ===
+    # Tm [K]          Temperature at given geopotential height Hz    
+    # rho [km/m^3]    Density at given geopotential height Hz
+    # === OUTPUTS === 
+    # dvisc [N.s/m^2]              Dynamic Viscosity 
+    # kvisc [m^2/s]                Kinematic Viscosity
+    # === CONSTANTS ===
+    beta = 1.458*10**-6         # [kg/s.m.K^0.5] - "Constant"
+    S = 110.4                   # [K] - Sutherland's constant
+    dvisc = (beta*Tm**1.5)/(Tm+S) # [N.s/m^2] - Dynamic viscosity
+    kvisc = dvisc/rho           # [m^2/s] - Kinematic Viscosity    
+    return dvisc, kvisc
+
+#%% Flight
+
+def mach(V,Vs):
+    # The aim of this function is to calculate the local Mach number at the 
+    # instant of interest.
+    # === INPUTS ===
+    # V [m/s]                   Local flow velocity 
+    # Vs [m/s]                  Speed of sound in the medium
+    # === OUTPUTS ===
+    # M [adim]                  Local Mach Number
+    M = V/Vs                    # [adim] - Local Mach Number
+    return M
+    
