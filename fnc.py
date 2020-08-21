@@ -2,7 +2,6 @@
 # Name: fnc.py
 # Authors: Trajectory Team (Matias Pellegrini, Pablo Lobo)
 # Owner: LIA Aerospace
-# Date: August 2020
 #
 #%% Script description
 #
@@ -22,6 +21,15 @@ def layer(Hz: float)->float:
     # === OUTPUTS === 
     # b [adim] - Subscript of the layer
     #
+    # Input control
+    try:
+        int(Hz)
+    except ValueError:
+        try:
+            float(Hz)
+        except ValueError:
+            print("Fn: layer. Input must be a number.")
+            return
     # Cases
     if Hz>=0 and Hz<11000:
         b = 0
@@ -39,6 +47,10 @@ def layer(Hz: float)->float:
         b = 6
     elif Hz==84852:
         b = 7
+    else: 
+        print('Fn: Layer. Hz must be a value between 0 and 84852m')
+        b = 'Error - Check Hz'
+        return
     return b
         
 def table4(z: float):
@@ -50,16 +62,26 @@ def table4(z: float):
     # b [adim]      Subscript of the layer
     # Lmb [K/km']   Molecular-scale temperature gradient (Table 4)
     # Tmb [K]       Temperature constant
-    #   This value is calculated as Tm,b = Tm,b-1 + Lm,b-1 * (Hb - Hb-1) 
     # Hb [km']      Geopotential Height of the layer (Table 4)
     # Hz [km']      Geopotential Height of the vehicle
     # Pb [N/m^2]    Pressure constant 
-    #   This value is calculated making sure p(z) is continuous.
-    # Function
+    # Input control
+    try:
+        int(z)
+    except ValueError:
+        try:
+            float(z)
+        except ValueError:
+            print("Fn: table4. Input must be a number.")
+            return
     # The layer is defined.
     ro = 6356.766 * 10**3       # [m] - Earth's radius - (Page 4)
     Hz = (z*ro) / (ro + z)      # [m'] - Geopotential height of the vehicle
     b = layer(Hz)               # [adim] - Subscript of the layer
+    # Verifying b
+    if b==None:
+        print('Fn: table4. Z must be a value between 0m and 85999m.')
+        return
     Hz = Hz*0.001               # [km'] - Geopotential height of the vehicle
     Hb_vec = np.array([0, 11, 20, 32, 47, 51, 71, 84.852])
     Lmb_vec = np.array([-6.5, 0, 1, 2.8, 0, -2.8, -2, 0])
@@ -126,7 +148,7 @@ def Vs(Tm):
     # The aim of this function is to estimate the speed of sound value 
     # according to equation (50) of the US Standard Atmosphere 1976.
     # This function provides the speed of sound for the range 0-86km.
-    # Applies onl when the sound wave is a small perturbation on the 
+    # Applies only when the sound wave is a small perturbation on the 
     # ambient condition.
     # === INPUTS ===
     # Tm [K]          Temperature at given geopotential height Hz
@@ -171,4 +193,3 @@ def mach(V,Vs):
     # M [adim]                  Local Mach Number
     M = V/Vs                    # [adim] - Local Mach Number
     return M
-    
