@@ -125,7 +125,7 @@ def p(Tmb,Lmb,Hz,Hb,Pb):
     # P [N/m^2]     Pressure at given geopotential height Hz
     # === CONSTANTS ===
     go = 9.80665                # [m^2/s^2.m] - Gravity @ SL (Page 2)
-    R = 8.31432 * 10**-3        # [Nm / (kmol.K)] - Gas constant (Page 2)
+    R = 8.31432 * 10**3         # [Nm / (kmol.K)] - Gas constant (Page 2)
     Mo = 28.9644                # [kg/kmol] - Mean Molecular Weight - (Page 9)
     if Lmb!=0:
         P = Pb*(Tmb / (Tmb + (Lmb*(Hz-Hb))))**((go*Mo)/(R*Lmb*1000))
@@ -143,9 +143,9 @@ def rho(P,Tm):
     # === OUTPUTS === 
     # rho [kg/m^3]     Density at given geopotential height Hz
     # === CONSTANTS ===
-    R = 8.31432 * 10**-3        # [Nm / (kmol.K)] - Gas constant (Page 2)
-    Mo = 28.9644                # [kg/kmol] - Mean Molecular Weight - (Page 9)
-    rho = (P*Mo)/(R*Tm)         # [kg/m^3]  - Density (Eq 42)
+    R = 8.31432 * 10**3        # [Nm / (kmol.K)] - Gas constant (Page 2)
+    Mo = 28.9644               # [kg/kmol] - Mean Molecular Weight - (Page 9)
+    rho = (P*Mo)/(R*Tm)        # [kg/m^3]  - Density (Eq 42)
     return rho
     
 def Vs(Tm):
@@ -159,7 +159,7 @@ def Vs(Tm):
     # === OUTPUTS === 
     # Vs [m/s]     Speed of sound at given temperature Tm(Hz)
     # === CONSTANTS ===
-    R = 8.31432 * 10**-3        # [Nm / (kmol.K)] - Gas constant (Page 2)
+    R = 8.31432 * 10**3         # [Nm / (kmol.K)] - Gas constant (Page 2)
     Mo = 28.9644                # [kg/kmol] - Mean Molecular Weight - (Page 9)
     gamma = 1.4                 # [adim] - Ratio of Cp/Cv
     Vs = ((gamma*R*Tm)/Mo)**0.5 # [m/s] - Local speed of sound
@@ -212,7 +212,7 @@ def re(V,kvisc,L):
     # L [m]                     Characteristic length
     # === OUTPUTS ===
     # re [adim]                 Local Reynolds Number
-    re = V * L / kvisc          Local Reynolds Number
+    re = V * L / kvisc          # Local Reynolds Number
     return re
 
 def thrust(m_dot,Ve,Pe,Po):
