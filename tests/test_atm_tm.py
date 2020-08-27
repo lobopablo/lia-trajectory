@@ -1,5 +1,5 @@
 #%% Script information
-# Name: test_atm_table4.py
+# Name: test_atm_tm.py
 # Authors: Trajectory Team (Matias Pellegrini, Pablo Lobo)
 # Owner: LIA Aerospace
 #
@@ -16,20 +16,18 @@ import fnc as f
 #%% Tests that are meant to work
 print('====== Tests that should work ======','\n')
 
-testval = [0, 5000,11000,14000,20000,35000]
+testval = [0, 5004,11019,14031,20063,35194, 69757,82559]
 aux = np.arange(1,len(testval)+1)
 
 for (index,value) in zip(aux,testval):
     print('Test #',index,' - ','The input geometric height is ',value,sep='')
     b, Lmb, Tmb, Hb, H, Pb = f.table4(value)
-    print('The layer value is',b)
-    print('The Lmb value is',Lmb,'[K/km\']')
-    print('The Tmb value is',Tmb,'[K]')
-    print('The Hb value is',Hb,'[km\']')
-    print('The H value is',round(H,2),'[km\']')
-    print('The Pb value is',Pb,'[N/m^2]','\n')
+    print('The H value is',round(H*1000),'[m\']')
+    tm = f.tm(Tmb,Lmb,H,Hb)
+    print('The Tm value is',round(tm,3),'[K]','\n')
 
 #%% Tests that are NOT meant to work
+
 print('====== Tests that should NOT work ======','\n')
 
 testval = [90000] # Try also: 'string', 90000, -15.
@@ -38,9 +36,6 @@ aux = np.arange(1,len(testval)+1)
 for (index,value) in zip(aux,testval):
     print('Test Mistake #',index,' - ','The input geometric height is ',value,sep='')
     b, Lmb, Tmb, Hb, H, Pb = f.table4(value)
-    print('The layer value is',b)
-    print('The Lmb value is',Lmb,'[K/km\']')
-    print('The Tmb value is',Tmb,'[K]')
-    print('The Hb value is',Hb,'[km\']')
-    print('The H value is',round(H,2),'[km\']')
-    print('The Pb value is',Pb,'[N/m^2]','\n')
+    print('The H value is',round(H*1000),'[m\']')
+    tm = f.tm(Tmb,Lmb,H,Hb)
+    print('The Tm value is',round(tm,3),'[K]','\n')
