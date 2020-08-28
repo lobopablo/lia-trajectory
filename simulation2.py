@@ -11,7 +11,7 @@
 #
 import numpy as np
 import matplotlib.pylab as plt
-import c
+import c as c
 import fnc as f
 #%% Initial Conditions
 #
