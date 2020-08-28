@@ -185,6 +185,31 @@ def visc(Tm,rho):
     kvisc = dvisc/rho           # [m^2/s] - Kinematic Viscosity    
     return dvisc, kvisc
 
+def g(Z):
+    # The aim of this function is to estimate the acceleration due to gravity
+    # for a given geometric height, according to eq (17) of the US Standard
+    # Atmosphere 1976.
+    # === INPUT ===
+    # Z [m]         Geometric height of interest
+    # === OUTPUT ===
+    # g [m/s^2]     Acceleration due to gravity at given Z
+    # === CONSTANTS === (Page 8 of the Standard)
+    ro = 6356766    # [m] - Effective radius of the earth at a certain latitude
+    go = 9.80665    # [m/s^2] - Sea level value of the acceleration of gravity
+    # Input control
+    try:
+        int(Z)
+    except ValueError:
+        try:
+            float(Z)
+        except ValueError:
+            print("Fn: g. Input must be a number.")
+            return
+    if Z<0:
+        print('Fn: g. Input must be positive.')
+        return
+    g = go * (ro / (ro+Z))**2
+    return g
 #%% Flight
 
 # This block implements the different functions required for the
