@@ -288,6 +288,31 @@ def Tge(long,lat):
     tge = np.array([[ind11, ind12, ind13],[ind21, ind22, ind23],[ind31, ind32, ind33]])  
     return tge
 
+def Tei(hangle):
+    # The aim of this function is to calculate the transformation matrix 
+    # between the Earth and inertial coordinate systems. 
+    # Zipfel (3.12)
+    # === INPUTS ===
+    # hangle [rad]            Hour angle
+    # === OUTPUTS ===
+    # tei [3x3 mat]           T_EI
+    # Create the basic values
+    sha = np.sin(hangle)
+    cha = np.cos(hangle)
+    # Create 9 positions
+    ind11 = cha
+    ind12 = sha
+    ind13 = 0
+    ind21 = -sha
+    ind22 = cha
+    ind23 = 0
+    ind31 = 0
+    ind32 = 0
+    ind33 = 1
+    # Create the matrix itself
+    tei = np.array([[ind11, ind12, ind13],[ind21, ind22, ind23],[ind31, ind32, ind33]])  
+    return tei
+
 def Tmv(bang):
     # The aim of this function is to calculate the transformation matrix 
     # between the load factor and velocity coordinate systems. 
@@ -341,6 +366,38 @@ def Tvg(gamma,chi):
     tvg = np.array([[ind11, ind12, ind13],[ind21, ind22, ind23],[ind31, ind32, ind33]])  
     return tvg
 
+def date_now():
+    # The aim of this function is to return the date at time of invoking it.
+    # === INPUTS ===
+    # 
+    # === OUTPUTS ===
+    # date [datetime]           UTC Date at time of function invoking
+    # Function
+    from datetime import datetime
+    # date = datetime.now()     Local date
+    date = datetime.utcnow()    # UTC Date 
+    return date
+
+def date_parts(date_in):
+    # The aim of this function is to return the different values stored in the 
+    # input datetime value.
+    # === INPUTS ===
+    # date_in [datetime]       Input date
+    # === OUTPUTS ===
+    # yr [int]                 Year on input date
+    # m [int]                  Month on input date
+    # d [int]                  Day on input date
+    # h [int]                  Hour on input date
+    # m [int]                  Minute on input date
+    # s [int]                  Second on input date
+    yr = date_in.year
+    mo = date_in.month
+    d = date_in.day
+    h = date_in.hour
+    m = date_in.minute
+    s = date_in.second
+    return yr, mo, d, h, m, s
+
 def JD(yr,mo,d,h,min,s):
     # The aim of this function is to calculate the Julian Date 
     # Source: Vallado, Algorithm #14
@@ -393,33 +450,13 @@ def tjd2gmst(tjdate):
         gmst_d += 360   
     return gmst_s, gmst_d
 
-def date_now():
-    # The aim of this function is to return the date at time of invoking it.
+def add_timestep(date,timestep):
+    # The aim of this function is to add a given timestep to a given date.
     # === INPUTS ===
-    # 
+    # date [datetime]       Initial time
+    # timestep [timedelta]  Timestep to be added
     # === OUTPUTS ===
-    # date_out [datetime]        Date at time of function invoking
+    # date_out [datetime]   Final time
     # Function
-    from datetime import datetime
-    date = datetime.now()
-    return date
-
-def date_parts(date_in):
-    # The aim of this function is to return the different values stored in the 
-    # input datetime value.
-    # === INPUTS ===
-    # date_in [datetime]       Input date
-    # === OUTPUTS ===
-    # yr [int]                 Year on input date
-    # m [int]                  Month on input date
-    # d [int]                  Day on input date
-    # h [int]                  Hour on input date
-    # m [int]                  Minute on input date
-    # s [int]                  Second on input date
-    yr = date_in.year
-    mo = date_in.month
-    d = date_in.day
-    h = date_in.hour
-    m = date_in.minute
-    s = date_in.second
-    return yr, mo, d, h, m, s
+    date_out = date + timestep
+    return date_out
